@@ -1,0 +1,51 @@
+import tkinter as tk
+from tkinter import PhotoImage
+from tkinter import font
+
+# Create a function to start the game with the selected difficulty level
+def start_game(difficulty):
+    if difficulty == 'Play Again':
+        print('hi')
+        # startGame
+score=10
+# Create the main window
+root = tk.Tk()
+root.title("Just Dance Start Screen")
+
+# Set the window size to be larger (e.g., 800x600)
+window_width = 800
+window_height = 600
+root.geometry(f"{window_width}x{window_height}")
+
+# Load the background image
+background_image = PhotoImage(file="/Users/jennydong/Desktop/hack112/justDance3.png")
+
+# Create a label to display the background image
+background_label = tk.Label(root, image=background_image)
+background_label.place(relwidth=1, relheight=1)  # Make the label cover the entire window
+
+# Load the image you want to display
+image_to_display = PhotoImage(file="/Users/jennydong/Desktop/hack112/gameover.png")
+
+# Create a Label widget to display the image
+image_label = tk.Label(root, image=image_to_display)
+image_label.pack(pady=20)
+
+# Create a frame to center the buttons
+frame = tk.Frame(root)
+frame.pack(expand=True)  # Expand the frame to fill the window
+
+# Create a font object with your desired font properties
+custom_font = font.Font(family="Times New Roman", size=20, weight="bold")
+
+# Create and configure buttons for easy, medium, and hard difficulties
+Score = tk.Button(root, text=f"Your score is:{score}", font=custom_font, command=lambda: start_game("Score"))
+playAgain = tk.Button(root, text="Play Again", font=custom_font, command=lambda: start_game("Play Again"))
+
+# Use the pack geometry manager to center the button
+Score.pack(side="top", pady=30)
+playAgain.pack(side="top", pady=30)
+
+
+# Start the main loop
+root.mainloop()
