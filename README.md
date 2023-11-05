@@ -14,4 +14,11 @@ The frontend for the start/end pages of KKB Dance is developed using Tkinter.
 The drawing of rectangles and displaying of score onto the webcam canvas is done using OpenCV. 
 
 ## Instructions to run the code
+### For Windows only (for now)
+1. Git clone this repository
+`git clone https://github.com/Niaolan27/DancingQueen.git`
+2. Enter into the src/src/ folder. This is the folder containing all the code needed to run the game.
+3. Pip install the necessary packages in the requirements.txt file.
+`pip install -r requirements.txt`
+4. Run the code by running main.py
 
