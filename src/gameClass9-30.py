@@ -15,9 +15,9 @@ class Game:
         self.left_wrist_x = 0
         self.left_wrist_y = 0
         
-    def updateScore(self):
+    def updateScore(self, poseResults):
          # boolean variable for whether the whole program is running
-        for wristLocation in poseDetection(self, frame):
+        for wristLocation in poseResults:
             for rectangle in self.rectList:
                 x1 = rectangle[0]
                 x2 = rectangle[1]
