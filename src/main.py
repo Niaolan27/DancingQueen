@@ -1,6 +1,7 @@
-from game-30 import Game
+from game import Game
 from view import View
 from music import Music
+from playsound import playsound
 import time
 
 def isAlmostEqual(time1, time2):
@@ -20,11 +21,11 @@ if __name__ == 'main':
             song = Music()
             duration = song.duration
             bpm = song.bpm
-            interval = 60/bpm #interval to add rectangle
+            dt = round(60/bpm,1) #interval to add rectangle
             game = Game() #initialize the game
+            playsound(song.audiofile)
             while game.isRunning():
                 currTime = round(time.time() - startTime, 1)
-                dt = round(60/bpm,1)
                 game.generateRect(currTime,dt) #generates rectangles at the necessary intervals
                 frame = view.getFrame() 
                 poseResults = game.poseDetection(frame) # positions of wrists
