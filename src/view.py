@@ -7,6 +7,7 @@ import mediapipe as mp
 import tkinter as tk
 from tkinter import PhotoImage
 from tkinter import font
+from game import Game
 
 '''
 
@@ -19,11 +20,11 @@ class View:
         self.rectLen = 100
         self.showGame = False
         self.currSong = None
-        self.songList = ['Dancing Queen by ABBA',
-                         'Sorry by Justin Beiber',
-                         'I Knew You Were Trouble by Taylor Swift', 
-                         "Hips Don't Lie by Shakira",
-                         'Something Just Like This by Coldplay and The Chainsmokers']
+        self.songList = ['Dancing Queen - ABBA',
+                         'Sorry - Justin Beiber',
+                         'I Knew You Were Trouble - Taylor Swift', 
+                         "Hips Don't Lie - Shakira",
+                         'Something Just Like This - Coldplay and The Chainsmokers']
         
 
 
@@ -31,12 +32,14 @@ class View:
         # Open the camera
         self.showGame = True
         self.cap = cv2.VideoCapture(0)
-        self.rect = np.ones((100,100,3),dtype='uint8')*255
+        self.rect = np.ones((50,50,3),dtype='uint8')*255
+        self.body = np.full((10,10,3),[255,0,0], dtype='uint8')
+        
 
 
     def startGame(self, song, root):
         if song in self.songList:
-            print('hi')
+            
             self.currSong = song
             self.showGame = True
             root.destroy()
@@ -45,6 +48,10 @@ class View:
 
 
     #get methods
+
+    def getKey(self):
+        k = cv2.waitKey(10)
+        return k
 
     def getSong(self):
         return self.currSong
@@ -74,9 +81,9 @@ class View:
         # image_label.pack(pady=20)  # Add padding to separate the image from buttons
 
         # Load the frame image
-        background_image = background_image = PhotoImage(file="C:\\Users\\wands\\Documents\\CS_15112\\justDance3.png")  # Replace "frame.png" with your image file name
+        background_image = background_image = PhotoImage(file="C:\\Users\\wands\\Documents\\CS_15112\\hack112\\justDance3.png")  # Replace "frame.png" with your image file name
 
-        # Create a label to display the frame image
+        # Create a label to display the frame
         background_label = tk.Label(root, image=background_image)
         background_label.place(relwidth=1, relheight=1)  # Make the label cover the entire window
 
@@ -90,11 +97,11 @@ class View:
         custom_font = font.Font(family="Times New Roman", size=20, weight="bold")
 
         # Create and configure buttons for easy, medium, and hard difficulties
-        song_1 = tk.Button(root, text="Dancing Queen by ABBA", font = custom_font, command=lambda: self.startGame("Dancing Queen by ABBA", root))
-        song_2 = tk.Button(root, text="Sorry by Justin Beiber", font = custom_font, command=lambda: self.startGame("Sorry by Justin Beiber", root))
-        song_3 = tk.Button(root, text="I Knew You Were Trouble by Taylor Swift", font = custom_font, command=lambda: self.startGame("I Knew You Were Trouble by Taylor Swift", root))
-        song_4 = tk.Button(root, text="Hips Don't Lie by Shakira", font = custom_font, command=lambda: self.startGame("Hips Don't Lie by Shakira", root))
-        song_5 = tk.Button(root, text="Something Just Like This by Coldplay and The Chainsmokers", font = custom_font, command=lambda: self.startGame("Something Just Like This by Coldplay and The Chainsmokers", root))
+        song_1 = tk.Button(root, text="Dancing Queen - ABBA", font = custom_font, command=lambda: self.startGame("Dancing Queen - ABBA", root))
+        song_2 = tk.Button(root, text="Sorry - Justin Beiber", font = custom_font, command=lambda: self.startGame("Sorry - Justin Beiber", root))
+        song_3 = tk.Button(root, text="I Knew You Were Trouble - Taylor Swift", font = custom_font, command=lambda: self.startGame("I Knew You Were Trouble - Taylor Swift", root))
+        song_4 = tk.Button(root, text="Hips Don't Lie - Shakira", font = custom_font, command=lambda: self.startGame("Hips Don't Lie - Shakira", root))
+        song_5 = tk.Button(root, text="Something Just Like This - Coldplay and The Chainsmokers", font = custom_font, command=lambda: self.startGame("Something Just Like This - Coldplay and The Chainsmokers", root))
 
 
         # Use the pack geometry manager to center the buttons
@@ -110,16 +117,20 @@ class View:
 
 
     def loadRect(self, rectCoords):
-        x1,x2,y1,y2 = rectCoords
+        x1 = rectCoords[0]
+        x2 = rectCoords[1]
+        y1 = rectCoords[2]
+        y2 = rectCoords[3]
+        
+
         # Select the region in the frame where we want to add the image and add the images using cv2.addWeighted()
-        added_image = cv2.addWeighted(self.frame[x1:x2,y1:y2,:],0,self.rect[0:100,0:100,:],1,0)
+        added_image = cv2.addWeighted(self.frame[x1:x2,y1:y2,:],0,self.rect[0:50,0:50,:],1,0)
         # Change the region with the result
         self.frame[x1:x2,y1:y2] = added_image
         # For displaying current value of alpha(weights)
-        cv2.imshow('a',self.frame)
 
 
-    def loadGame(self, rectList):
+    def loadGame(self, rectList, bodyList):
         '''
         Args:
         rectList
@@ -130,10 +141,33 @@ class View:
 
         # read the frame
         ret, self.frame = self.cap.read()
-        self.frame = cv2.flip(self.frame,1)
+        
+        #self.frame = cv2.flip(self.frame,1)
 
         for rectCoords in rectList:
             self.loadRect(rectCoords)
+        if bodyList != None:
+            
+            for body in bodyList:
+                self.loadBody(body)
+
+        cv2.imshow('hi',self.frame)
+
+
+    def loadBody(self, body):
+        cv2.circle(self.frame, body, 10, (0,0,255), -1)
+        
+
+        # x1, y1 = body
+        # x2, y2 = x1 + 10, y1 + 10
+        # if 0 < x1 < 400 and 0 < y1 < 400:
+        #     if 0 < x2 < 400 and 0 < y2 < 400:
+        #         print('Show Body!')
+        #         added_image = cv2.addWeighted(self.frame[x1:x2,y1:y2,:],0,self.body[0:10,0:10,:],1,0)
+        #         # Change the region with the result
+        #         self.frame[x1:x2,y1:y2] = added_image
+        #         cv2.imshow('a',self.frame)
+
 
 
     def destroyGame(self):
@@ -141,33 +175,13 @@ class View:
         self.currSong = None
         self.cap.release()
         cv2.destroyAllWindows()
+
+
+    def loadEndScreen(score):
+        print('End screen loaded!')
+        pass
             
     
-
-
-if __name__ == '__main__':
-
-    #controller = Controller()
-
-    view = View()
-
-    while True:
-        print(view.showGame)
-        if not view.showGame:
-            view.loadStartScreen()
-        else:
-            view.initGame()
-            while True:
-                #rectList = controller.getRectList()
-                rectList = [[250,350,250,350],[100,200,100,200]]
-                view.loadGame(rectList)
-
-                k = cv2.waitKey(10)
-                # Press q to break  
-                if k == ord('q'):
-                    view.destroyGame()
-                    view.showGame = False
-                    break
 
 
 
